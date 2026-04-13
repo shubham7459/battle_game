@@ -2,238 +2,656 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Battle Arena — 4 Fighters</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>BATTLE ARENA — PIXEL DUEL</title>
 <style>
-:root{--gold:#c9a84c;--gold-b:#f0cc6e;--blood:#8b0000;--blood-b:#cc0000;--dark:#06060f;--panel:#0d0d1a;--border:#1a1a30;--txt:#d4c5a9;--dim:#5a5550;--hl:#4488ff;--bb:#dd4422;--gj:#00ddff;--sk:#cc4400}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#06060f;background-image:radial-gradient(ellipse at 20% 50%,rgba(68,136,255,.06) 0%,transparent 55%),radial-gradient(ellipse at 80% 50%,rgba(139,0,0,.06) 0%,transparent 55%);color:var(--txt);font-family:'Georgia',serif;display:flex;flex-direction:column;align-items:center;height:100vh;overflow:hidden;padding:6px 10px;gap:4px}
-.hdr{text-align:center;flex-shrink:0}
-.hdr-t{font-family:'Georgia',serif;font-weight:900;font-size:clamp(1rem,2.5vw,1.5rem;color:var(--gold);letter-spacing:3px}
-.hdr-s{font-size:.5rem;letter-spacing:3px;color:var(--dim);font-family:monospace}
-.rb{display:inline-block;font-size:.45rem;color:var(--gold-b);border:1px solid rgba(201,168,76,.2);padding:1px 8px;border-radius:20px;margin-top:1px;letter-spacing:2px;font-family:monospace}
-.sel-wrap{display:flex;gap:8px;justify-content:center;flex-shrink:0;flex-wrap:wrap}
-.sel-btn{font-family:monospace;font-size:.6rem;letter-spacing:1px;padding:5px 10px;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:var(--panel);color:var(--dim);transition:all .2s}
-.sel-btn.p1s{border-color:var(--hl);color:var(--hl);background:rgba(68,136,255,.08)}
-.sel-btn.p2s{border-color:var(--bb);color:var(--bb);background:rgba(221,68,34,.08)}
-.sel-btn:hover{opacity:.85}
-.sel-lbl{font-size:.5rem;color:var(--dim);font-family:monospace;letter-spacing:2px;text-align:center}
-.gob{width:100%;max-width:680px;text-align:center;padding:5px 12px;background:linear-gradient(135deg,rgba(139,0,0,.15),rgba(201,168,76,.1));border:1px solid rgba(201,168,76,.25);border-radius:8px;flex-shrink:0;display:none}
-.gob.show{display:block}
-.go-t{font-size:clamp(.9rem,2.5vw,1.3rem;font-weight:900;color:var(--gold);letter-spacing:3px;font-family:monospace}
-.wn{font-size:.8rem;color:#fff;font-family:monospace}
-.wn span{color:var(--gold-b)}
-.sw{width:100%;max-width:680px;flex-shrink:0}
-.shp{display:flex;align-items:center;gap:6px;margin-bottom:3px}
-.hs{display:flex;align-items:center;gap:4px;flex:1}
-.hs.r{flex-direction:row-reverse}
-.hn{font-family:monospace;font-size:.45rem;letter-spacing:1px;font-weight:700;white-space:nowrap}
-.hn.p1c{color:var(--hl)}.hn.p2c{color:var(--bb)}
-.ht{flex:1;height:6px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:2px;overflow:hidden}
-.hf{height:100%;border-radius:2px;transition:width .5s}
-#h1f{background:linear-gradient(90deg,#0e2488,var(--hl);width:100%}
-#h2f{background:linear-gradient(90deg,var(--bb),#7a1a0a);width:100%;float:right}
-.hnum{font-family:monospace;font-size:.5rem;min-width:22px;text-align:center}
-.vsm{font-family:monospace;font-size:.4rem;color:var(--dim);padding:0 3px}
-.cb{background:#0c0c1e;border:2px solid #1a1e3a;border-radius:7px;overflow:hidden;box-shadow:0 0 25px rgba(0,0,0,.8)}
-#gc{display:block;image-rendering:pixelated;image-rendering:crisp-edges;width:100%;height:auto}
-.cards{display:grid;grid-template-columns:1fr auto 1fr auto;gap:6px;width:100%;max-width:680px;flex-shrink:0}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:6px 10px;transition:border-color .3s,box-shadow .3s}
-.card.active{border-color:rgba(201,168,76,.35);box-shadow:0 0 14px rgba(201,168,76,.06)}
-.card.c1t{border-top:2px solid rgba(68,136,255,.3)}
-.card.c2t{border-top:2px solid rgba(204,68,34,.3)}
-.clbl{font-family:monospace;font-size:.4rem;letter-spacing:2px;color:var(--dim)}
-.cname{font-family:monospace;font-size:.7rem;font-weight:700;margin:1px 0 5px}
-.p1n{color:var(--hl)}.p2n{color:var(--bb)}
-.bl{display:flex;justify-content:space-between;font-family:monospace;font-size:.45rem;color:var(--dim);margin-bottom:1px}
-.bv{color:var(--txt);font-weight:600}
-.bbg{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:2px;height:9px;overflow:hidden}
-.bf{height:100%;border-radius:2px;transition:width:.8s;min-width:3px}
-.bhi{background:linear-gradient(90deg,#1a7a3a,#2ecc71)}
-.bmi{background:linear-gradient(90deg,#7a5a00,#f0a500)}
-.blo{background:linear-gradient(90deg,var(--blood),var(--blood-b));width:100%}
-.sr{display:flex;gap:3px;margin-top:4px}
-.st{flex:1;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:3px;padding:2px;text-align:center}
-.sic{font-size:.6rem;display:block}.sv{font-family:monospace;font-size:.65rem;font-weight:700;color:var(--gold);display:block}
-.sl{font-size:.4rem;color:var(--dim);font-family:monospace;display:block}
-.db{display:inline-block;background:rgba(68,136,255,.08);border:1px solid rgba(68,136,255,.25);color:#8aaeff;font-size:.45rem;padding:1px 5px;border-radius:20px;margin-top:3px;font-family:monospace;letter-spacing:1px}
-.vsc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-.vst{font-family:monospace;font-size:1.2rem;font-weight:900;color:var(--blood-b);text-shadow:0 0 16px rgba(204,0,0,.4)}
-.sw2{font-size:.9rem;animation:flt 3s ease-in-out infinite}
-@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.log{width:100%;max-width:680px;flex-shrink:0;background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:4px 12px;text-align:center;font-style:italic;font-size:.75rem;color:var(--txt);min-height:24px;display:flex;align-items:center;justify-content:center}
-#lt{transition:opacity .3s}
-.tr{font-family:monospace;font-size:.5rem;color:var(--gold);letter-spacing:2px;flex-shrink:0;text-align:center}
-.tr span{color:var(--gold-b);font-weight:700}
-.acts{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;flex-shrink:0}
-.btn{font-family:monospace;font-size:.55rem;font-weight:700;letter-spacing:1px;padding:6px 12px;border:none;border-radius:5px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.btn:disabled{opacity:.3;cursor:not-allowed}
-.ba{background:linear-gradient(135deg,#5a0000,var(--blood-b));color:#fff;border:1px solid rgba(204,0,0,.4);box-shadow:0 2px 8px rgba(139,0,0,.3)}
-.ba:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 16px rgba(204,0,0,.5)}
-.bd{background:linear-gradient(135deg,#06133a,#0e2870);color:#8aaeff;border:1px solid rgba(68,136,255,.25)}
-.bd:hover:not(:disabled){transform:translateY(-2px)}
-.bs{background:linear-gradient(135deg,#2c1800,#8a5500);color:var(--gold-b);border:1px solid rgba(201,168,76,.35)}
-.bs:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 16px rgba(201,168,76,.4)}
-.bh{background:linear-gradient(135deg,#3a0000,#880000);color:#ffaaaa;border:1px solid rgba(255,80,80,.3)}
-.bh:hover:not(:disabled){transform:translateY(-2px)}
-.bq{background:linear-gradient(135deg,#1a2a10,#406020);color:#aaffaa;border:1px solid rgba(80,200,80,.25)}
-.bq:hover:not(:disabled){transform:translateY(-2px)}
-.bc{background:linear-gradient(135deg,#2a1a00,#6a4000);color:#ffdd88;border:1px solid rgba(200,160,60,.3)}
-.bc:hover:not(:disabled){transform:translateY(-2px)}
-.br{background:linear-gradient(135deg,#0d1f0d,#205520);color:#7aff7a;border:1px solid rgba(80,200,80,.25);font-size:.6rem;padding:8px 24px}
-.br:hover{transform:translateY(-2px)}
-@keyframes pls{0%,100%{opacity:1}50%{opacity:.35}}
-.btn.pulsing{animation:pls .5s infinite}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  background: #03030c;
+  background-image: radial-gradient(ellipse at 30% 40%, rgba(68,136,255,0.08) 0%, transparent 60%),
+                    radial-gradient(ellipse at 85% 70%, rgba(139,0,0,0.08) 0%, transparent 60%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Courier New', 'VT323', monospace;
+  padding: 16px;
+}
+
+.game-container {
+  max-width: 1200px;
+  width: 100%;
+  background: rgba(6,6,15,0.65);
+  backdrop-filter: blur(2px);
+  border-radius: 28px;
+  padding: 16px 20px 24px;
+  border: 1px solid rgba(201,168,76,0.3);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  margin-bottom: 14px;
+}
+.arena-title {
+  font-size: 1.9rem;
+  font-weight: 900;
+  letter-spacing: 6px;
+  background: linear-gradient(135deg, #e4c47a, #c9a84c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 6px rgba(0,0,0,0.5);
+}
+.sub {
+  font-size: 0.7rem;
+  color: #7a7568;
+  letter-spacing: 2px;
+  font-family: monospace;
+}
+
+/* fighter select */
+.select-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin: 12px 0 18px;
+}
+.select-panel {
+  background: #0a0a18cc;
+  backdrop-filter: blur(4px);
+  border: 1px solid #2a2a3e;
+  border-radius: 28px;
+  padding: 10px 18px;
+  min-width: 240px;
+}
+.select-label {
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  color: #aa9f82;
+  margin-bottom: 6px;
+  text-align: center;
+}
+.btn-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.fighter-btn {
+  background: #11111f;
+  border: 1px solid #3a3a4a;
+  color: #b9ae8c;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 0.7rem;
+  padding: 5px 12px;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.fighter-btn.active-p1 {
+  border-color: #4488ff;
+  color: #88aaff;
+  background: #142044;
+  box-shadow: 0 0 6px #4488ff66;
+}
+.fighter-btn.active-p2 {
+  border-color: #dd4422;
+  color: #ff8866;
+  background: #441a0a;
+  box-shadow: 0 0 6px #dd442266;
+}
+
+/* battle canvas (4x pixel density) */
+.canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0 8px;
+}
+#battleCanvas {
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: pixelated;
+  background: #050510;
+  border-radius: 16px;
+  box-shadow: 0 0 0 2px #2a2a3a, 0 12px 28px black;
+  width: 100%;
+  height: auto;
+  max-width: 880px;
+  border: 1px solid #c9a84c55;
+}
+
+/* health bars */
+.health-area {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin: 12px 10px 8px;
+}
+.hp-card {
+  flex: 1;
+  background: #0a0a18aa;
+  backdrop-filter: blur(4px);
+  border-radius: 28px;
+  padding: 8px 16px;
+  border: 1px solid #3a3a4e;
+}
+.hp-name {
+  font-weight: bold;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  display: flex;
+  justify-content: space-between;
+}
+.hp-bar-bg {
+  background: #1a1a2a;
+  height: 12px;
+  border-radius: 12px;
+  margin: 5px 0;
+  overflow: hidden;
+}
+.hp-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #2e8b57, #4cbb6e);
+  border-radius: 12px;
+  transition: width 0.22s ease-out;
+}
+.hp-number {
+  font-family: monospace;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+.p1-name { color: #77aaff; }
+.p2-name { color: #ff8866; }
+
+/* stats cards */
+.stats-row {
+  display: flex;
+  gap: 16px;
+  margin: 12px 0;
+}
+.stat-card {
+  background: #0c0c1ccc;
+  border-radius: 24px;
+  padding: 8px 16px;
+  flex: 1;
+  border-left: 3px solid;
+  backdrop-filter: blur(2px);
+}
+.stat-card.p1-side { border-left-color: #4488ff; }
+.stat-card.p2-side { border-left-color: #dd4422; }
+.stat-title {
+  font-size: 0.6rem;
+  color: #8a8570;
+  letter-spacing: 2px;
+}
+.fighter-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.attack-def {
+  display: flex;
+  gap: 24px;
+  margin-top: 4px;
+}
+.atk-val, .def-val {
+  font-size: 1rem;
+  font-weight: bold;
+}
+.defense-badge {
+  font-size: 0.6rem;
+  background: #22446655;
+  border-radius: 20px;
+  padding: 2px 8px;
+  display: inline-block;
+  margin-top: 5px;
+}
+
+/* action buttons */
+.action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 18px 0 12px;
+}
+.action-btn {
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 0.7rem;
+  padding: 8px 14px;
+  border-radius: 60px;
+  border: none;
+  cursor: pointer;
+  transition: 0.08s linear;
+  background: #181828;
+  color: #eeddbb;
+  border-bottom: 2px solid #5a5a6e;
+}
+.action-btn:active { transform: scale(0.96); }
+.action-btn:disabled { opacity: 0.4; transform: none; cursor: not-allowed; }
+.btn-attack { background: #8b1a1a; border-bottom-color: #cc4444; }
+.btn-heavy { background: #5a2a0a; border-bottom-color: #bb5522; }
+.btn-quick { background: #2a4a6a; border-bottom-color: #44aaff; }
+.btn-defend { background: #2a3a2a; border-bottom-color: #66aa66; }
+.btn-counter { background: #6a2a4a; border-bottom-color: #cc66aa; }
+.btn-special { background: #7a5a10; border-bottom-color: #eebb33; text-shadow: 0 0 2px gold; }
+
+/* log & turn */
+.info-panel {
+  background: #060610bb;
+  border-radius: 28px;
+  padding: 8px 18px;
+  margin: 10px 0 6px;
+  text-align: center;
+  font-family: monospace;
+  font-size: 0.75rem;
+}
+.turn-indicator {
+  font-weight: bold;
+  color: #c9a84c;
+}
+.log-text {
+  color: #cbc3aa;
+  transition: 0.1s;
+}
+.winner-overlay {
+  text-align: center;
+  background: #000000aa;
+  backdrop-filter: blur(8px);
+  border-radius: 60px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+.winner-text {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #ffcc66;
+}
+.restart-btn {
+  background: #2a5a2a;
+  border: none;
+  padding: 6px 20px;
+  border-radius: 60px;
+  font-weight: bold;
+  margin-top: 6px;
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
-<div class="hdr">
-  <div class="hdr-t">&#9876; BATTLE ARENA</div>
-  <div class="hdr-s">FOUR FIGHTERS &nbsp;&middot;&nbsp; ONE ARENA</div>
-  <div class="rb" id="rb">ROUND 1</div>
-</div>
-<div class="sel-wrap" id="selDiv">
-    <div>
-      <div class="sel-lbl">PLAYER 1</div>
-      <div style="display:flex;gap:4px;margin-top:3px">
-        <button class="sel-btn p1s" onclick="selectFighter(1,'hl')" id="s1hl">HOMELANDER</button>
-        <button class="sel-btn" onclick="selectFighter(1,'bb')" id="s1bb">BUTCHER</button>
-        <button class="sel-btn" onclick="selectFighter(1,'gj')" id="s1gj">GOJO</button>
-        <button class="sel-btn" onclick="selectFighter(1,'sk')" id="s1sk">SUKUNA</button>
-      </div>
-    </div>
-    <div>
-      <div class="sel-lbl">PLAYER 2</div>
-      <div style="display:flex;gap:4px;margin-top:3px">
-        <button class="sel-btn" onclick="selectFighter(2,'hl')" id="s2hl">HOMELANDER</button>
-        <button class="sel-btn p2s" onclick="selectFighter(2,'bb')" id="s2bb">BUTCHER</button>
-        <button class="sel-btn" onclick="selectFighter(2,'gj')" id="s2gj">GOJO</button>
-        <button class="sel-btn" onclick="selectFighter(2,'sk')" id="s2sk">SUKUNA</button>
-      </div>
-    </div>
+<div class="game-container">
+  <div class="header">
+    <div class="arena-title">⚔️ BATTLE ARENA ⚔️</div>
+    <div class="sub">PIXEL MAYHEM · 4 LEGENDS</div>
   </div>
-<div class="gob" id="gob">
-    <div class="go-t">&#9876; VICTORY &#9876;</div>
-    <div class="wn">Winner: <span id="wn"></span></div>
-  </div>
-  <div class="sw">
-    <div class="shp">
-      <div class="hs left">
-        <span class="hn p1c" id="p1name">HOMELANDER</span>
-        <div class="ht"><div class="hf" id="h1f"></div></div>
-        <span class="hnum" id="h1n">100</span>
-      </div>
-      <div class="vsm">VS</div>
-      <div class="hs r">
-        <span class="hn p2c" id="p2name">BUTCHER</span>
-        <div class="ht"><div class="hf" id="h2f"></div></div>
-        <span class="hnum" id="h2n">100</span>
-      </div>
-    </div>
-    <div class="cb"><canvas id="gc" width="960" height="480"></canvas></div>
-  </div>
-  <div class="cards">
-    <div class="card c1t active" id="card1">
-      <div class="clbl">PLAYER ONE</div>
-      <div class="cname p1n" id="cn1">Homelander</div>
-      <div class="bl"><span>Health</span><span class="bv" id="b1l">100 / 100</span></div>
-      <div class="bbg"><div class="bf bhi" id="b1" style="width:100%"></div></div>
-      <div class="sr">
-        <div class="st"><span class="sic">&#9876;</span><span class="sv" id="a1v">18</span><span class="sl">ATK</span></div>
-        <div class="st"><span class="sic">&#128737;</span><span class="sv" id="d1v">12</span><span class="sl">DEF</span></div>
-      </div>
-      <div class="db" id="p1db" style="display:none">&#128737; Defending</div>
-    </div>
-    <div class="vsc">
-      <div class="sw2">&#9876;</div>
-      <div class="vst">VS</div>
-      <div class="sw2" style="animation-delay:1.5s">&#128481;</div>
-    </div>
-    <div class="card c2t" id="card2">
-      <div class="clbl">PLAYER TWO</div>
-      <div class="cname p2n" id="cn2">Butcher</div>
-      <div class="bl"><span>Health</span><span class="bv" id="b2l">100 / 100</span></div>
-      <div class="bbg"><div class="bf bhi" id="b2" style="width:100%"></div></div>
-      <div class="sr">
-        <div class="st"><span class="sic">&#9876;</span><span class="sv" id="a2v">16</span><span class="sl">ATK</span></div>
-        <div class="st"><span class="sic">&#128737;</span><span class="sv" id="d2v">10</span><span class="sl">DEF</span></div>
-      </div>
-      <div class="db" id="p2db" style="display:none">&#128737; Defending</div>
-    </div>
-  </div>
-  <div class="log"><span id="lt">Choose your fighters and begin battle!</span></div>
-  <div class="tr" id="turnRow">It is <span id="tn">Homelander</span>'s turn to act</div>
-  <div class="acts" id="actDiv">
-    <button class="btn ba" onclick="doAction('attack')">&#9876; Attack</button>
-    <button class="btn bh" onclick="doAction('heavy')">&#128165; Heavy</button>
-    <button class="btn bq" onclick="doAction('quick')">&#9889; Quick</button>
-    <button class="btn bd" onclick="doAction('defend')">&#128737; Defend</button>
-    <button class="btn bc" onclick="doAction('counter')">&#8635; Counter</button>
-    <button class="btn bs" onclick="doAction('special')" id="btnSpec">&#11088; Special</button>
-  </div>
-</div>
-<script>
-const gc = document.getElementById('gc');
-const ctx = gc.getContext('2d');
-ctx.imageSmoothingEnabled = false;
-const W = 960, H = 480;
-const GY = 380;
-const FIGHTERS = {
-  hl:{name:'Homelander',atk:18,def:12,color:'#4488ff',
-    C:{h:'#ddb820',hH:'#f0d848',hS:'#a07810',sk:'#e8a060',skH:'#f0b878',skS:'#c07838',su:'#1836a8',suH:'#2850c8',suS:'#0e2068',ca:'#cc1010',caH:'#e83828',caS:'#8a0808',go:'#e8c020',goH:'#f8e848',goS:'#b09010',red:'#dd2020',ey:'#ff3300',wh:'#ffffff',bk:'#000000',bl:'#2040a0'}}
-  bb:{name:'Butcher',atk:16,def:10,color:'#dd4422',
-    C:{h:'#1a1a1a',hH:'#383838',sk:'#c8854a',skH:'#d8a060',skS:'#a06030',co:'#1e1e1e',coH:'#333333',coS:'#0e0e0e',bt:'#8b5a1a',btH:'#a87028',bw:'#2a2a2a',bd:'#3a2a18',bdH:'#504028',boots:'#141010',bootsHi:'#222222',dn:'#2a3a60',dnH:'#3a4a70',bk:'#000000',wh:'#4a3020',li:'#888888'}}
-  gj:{name:'Gojo Satoru',atk:22,def:14,color:'#00ddff',
-    C:{h:'#ffffff',hH:'#e8f0ff',hS:'#c0c8e0',sk:'#f0d0b8',skS:'#d0a888',su:'#1a1a2e',suH:'#2a2a4e',suS:'#0a0a1a',bl:'#000000',bg:'#cccccc',ey:'#00ddff',eyG:'#80ffff',wh:'#f8f8ff',bk:'#000000',li:'#c89878'}}
-  sk:{name:'Ryomen Sukuna',atk:25,def:8,color:'#cc4400',
-    C:{sk:'#e8b090',skH:'#fcc8a0',skS:'#c07848',tt:'#8b0000',ttB:'#cc2200',h:'#1a1a1a',hH:'#383838',ro:'#1a0808',roH:'#2a1010',roS:'#0a0404',mk:'#cc0000',ey:'#ffaa00',eyG:'#ff6600',th:'#ffe8c0',bk:'#000000',dk:'#a06040',li:'#cc2200',wh:'#2a1010'}}
-};
-let p1Id='hl',p2Id='bb';
-let p1Hp=100,p2Hp=100;
-let p1Def=false,p2Def=false;
-let turn=1,round=1,gameOver=false,busy=false;
-let f=0,animId=null,idleId=null;
-let curAnim='',phase=0,timer=0,punchCount=0;
-let pendingDmg=0,pendingCrit=false;
-let p1X=40,p2X=120,p1Y=GY,p2Y=GY;
-const P1_HOME=40,P2_HOME=120;
 
-let shakeX=0,shakeY=0,shakeI=0;
-function shake(i){shakeI=Math.max(shakeI,i)}
-function updateShake(){if(shakeI>0.3){shakeX=(Math.random()-.5)*shakeI;shakeY=(Math.random()-.5)*shakeI;shakeI*=0.87}else{shakeI=0;shakeX=0;shakeY=0;}}
-let flashA=0,flashC='255,255,255';
-function flash(a,c){flashA=a;flashC=c||'255,255,255';}
-function drawFlash(){if(flashA>0.005){ctx.fillStyle='rgba('+flashC+','+flashA.toFixed(3)+')';ctx.fillRect(0,0,W,H);flashA*=0.8}else flashA=0;}
-let particles=[];
-function spawnP(x,y,vx,vy,c,l,s){particles.push({x,y,vx,vy,c,l,ml:l,s:s||1});}
-function spawnBurst(x,y,n,c,sp,l,s){for(let i=0;i<n;i++){let a=Math.random()*Math.PI*2,sp2=Math.random()*sp;spawnP(x,y,Math.cos(a)*sp2,Math.sin(a)*sp2-.3,c,l+Math.random()*6,s||1)}}
-function drawParts(){for(let i=particles.length-1;i>=0;i--){let p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.05;p.l--;if(p.l<=0){particles.splice(i,1);continue}ctx.globalAlpha=p.l/p.ml;ctx.fillStyle=p.c;ctx.fillRect(Math.round(p.x),Math.round(p.y),p.s*3,p.s*3)}ctx.globalAlpha=1}
-let floats=[];
-function spawnFloat(x,y,t,c){floats.push({x,y,t,c,c,l:55,ml:55});}
-function drawFloats(){for(let i=floats.length-1;i>=0;i--){let fp=floats[i];fp.y-=.32;fp.l--;if(fp.l<=0){floats.splice(i,1);continue}ctx.globalAlpha=Math.min(1,fp.l/16);ctx.font='bold 10px monospace';ctx.textAlign='center';ctx.fillStyle='#000000';ctx.fillText(fp.t,fp.x+1,fp.y+1);ctx.fillStyle=fp.c;ctx.fillText(fp.t,fp.x,fp.y)}ctx.globalAlpha=1}
-let cam={z:1,zt:1,ox:0,oxt:0,oy:0,oyt:0,rt:0,speed:0.05,snap:false};
-function setCam(z,ox,oy,r){cam.zt=z;cam.oxt=ox;cam.oyt=oy;cam.rt=r;}
-function resetCam(){cam.zt=1;cam.oxt=0;cam.oyt=0;cam.rt=0;cam.s=0.25;cam.snap=false;}
-function updateCam(){
-  const s = cam.snap ? 0.3 : 0.08;
-  cam.z+=(cam.zt-cam.z)*s;
-  cam.ox+=(cam.oxt-cam.ox)*s;
-  cam.oy+=(cam.oyt-cam.oyt)*s;
-  cam.r+=(cam.rt-cam.rt)*s;
-  if(Math.abs(cam.z-cam.zt)<0.005) cam.z=cam.zt;
-  if(Math.abs(cam.ox-cam.oxt)<0.5) cam.ox=cam.oxt;
-  if(Math.abs(cam.oy-cam.oyt)<0.5) cam.oy=cam.oyt;
-  if(Math.abs(cam.r-cam.rt)<0.003) cam.r=cam.rt;
-}
-function applyCam(){ctx.save();ctx.translate(W/2,H/2);ctx.rotate(cam.r);ctx.scale(cam.z,cam.z);ctx.translate(-W/2+cam.ox*2,-H/2+cam.oy*2);}
-let bgC=null;
-function buildBg(){
-  bgC=document.createElement('canvas');bgC.width=W;bgC.height=H;
-  const bx=bgC.getContext('2d');bx.imageSmoothingEnabled=false;
-  const farB=[{x:18,w:36,h:54},{x:60,w:30,h:66},{x:96,w:42,h:48},{x:150,w:24,h:78},{x:180,w:36,h:32},{x:222,w:22,h:32},{x:270,w:30,h:72},{x:312,w:30,h:63},{x:348,w:54,h:60},{x:402,w:78,h:96},{x:480,w:66,h:72},{x:546,w:30,h:72},{x:612,w:54,h:105},{x:684,w:54,h:66},{x:720,w:30,h:66},{x:816,w:60,h:78},{x:876,w:84,h:96}];
-  const bldgs=[{x:0,w:72,h:90,c:'#0c0c1e'},{x:72,w:54,h:66,c:'#0e0e22'},{x:126,w:78,h:105,c:'#101028'},{x:204,w:60,h:78,c:'#0a0a1a'},{x:264,w:84,h:96,c:'#0c0c1e'},{x:348,w:54,h:60,c:'#0c0c1e'},{x:402,w:78,h:102,c:'#0c0c1e'},{x:546,w:66,h:84,c:'#0c0c1e'},{x:612,w:72,h:90,c:'#101028'},{x:684,w:54,h:66,c:'#0e0e22'},{x:876,w:84,h:96,c:'#101028'}];
-  farB=[{x:18,w:36,h:54},{x:60,w:30,h:66},{x:96,w:10,h:21},{x:108,w:12,h:17},{x:122,w:10,h:23},{x:144,w:12,h:17},{x:134,w:8,h:15},{x:180,w:36,h:32},{x:222,w:22,h:32},{x:270,w:30,h:72},{x:312,w:20,h:34},{x:396,w:20,h:34},{x:432,w:66,h:72},{x:546,w:66,h:84},{x:636,w:30,h:72},{x:720,w:30,h:66},{x:876,w:84,h:96}];
-  const wc=['#06060e','#e8c040','#f0d858','#f0d848','#a07810','#c07838','#0e2068','#cc1010','#e8c020','#f8e848','#cc1010','#dd2020','#ff3300','#ffffff','#000000','#2040a0','#4a3020','#888888','#6090cc','#e8c040','#2a1010','#333333','#6a4000','#283858','#3a4a70','#2a3a60','#283858','#1a1a1a','#3a1a2a','#2a1a2a','#1a1a1a','#282828','#181838','#222222','#2a2a2a','#1a1010','#2a3a60','#0a0a1a','#3a4a70','#10101a1a','#0a0a1a','#c89878','#d0a888','#f0d0b8','#1a1a2e','#f0f0ff','#000000','#c89878','#0a0a1a','#1a1a1a','#c0c8e0','#0a0a1a','#0a0a1a','#1a1a1a','#000000','#2a1010','#ffffff','#4a3020','#888888','#f0d0b8','#3a4a70','#1a1a1a','#1a1a2a','#1a1a1a','#1a1a2a','#1a1a1a','#1a1a1a'];
-  farB=[{x:36,w:36,h:54},{x:60,w:30,h:66},{x:96,w:10,h:21},{x:108,w:12,h:17},{x:144,w:12,h:17},{x:122,w:10,h:23},{x:180,w:36,h:32},{x:204,w:60,h:78,c:'#0a0a1a'},{x:264,w:84,h:96},{x:348,w:60,h:78,c:'#101028'},{x:423,w:66,h:72,c:'#0c0c1e'},{x:546,w:66,h:84,c:'#0c0c1e'},{x:612,w:72,h:90,c:'#101028'},{x:876,w:84,h:96,c:'#101028'}];
-  bldgs=[{x:0,w:72,h:90,c:'#0c0c1e'},{x:72,w:54,h:66,c:'#0e0e22'},{x:126,w:78,h:72,c:'#0e0e22'},{x:402,w:60,h:78,c:'#0a0a1a'},{x:876,w:84,h:96,c:'#101028'}];
-  const wc=['#06060e','#e8c040','#f0d858','#f0d848','#a07810','#c07838','#0e2068','#cc1010','#e8c020','#f8e848','#dd2020','#ff3300','#ffffff','#000000','#2040a0','#2a1010','#ffffff','#4a3020','#3a4a70','#1a1a1a','#1a1a2a','#1a1a1a','#1a1a1a','#0a0a1a','#1a1a2a','#0a0a1a','#282828','#181838','#222222','#2a2a2a','#1a1a1a','#2a2a2a','#1a1a1a','#2a1a2a','#0a0a1a','#1a1a1a','#0a0a1a','#1a1a2a','#0a0a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a2a','#0a0a1a','#0a0a1a','#0a0a1a','#0a0a1a','#0a0a1a','#1a1a1a','#0a0a1a','#1a1a1a','#1a1a1a','#0a0a1a','#1a1a1a','#0a0a1a','#0a0a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#0a0a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#0a0a1a','#0a0a1a','#1a0a1a','#0a0a1a','#1a0a1a','#0a0a1a','#0a0a1a','#1a0a1a','#0a0a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1a1a','#1a1
+  <!-- fighter selection -->
+  <div class="select-row" id="selectRow">
+    <div class="select-panel">
+      <div class="select-label">🔵 PLAYER 1</div>
+      <div class="btn-group" id="p1SelectGroup"></div>
+    </div>
+    <div class="select-panel">
+      <div class="select-label">🔴 PLAYER 2</div>
+      <div class="btn-group" id="p2SelectGroup"></div>
+    </div>
+  </div>
+
+  <!-- canvas (HIGH RES 4x original pixels) -->
+  <div class="canvas-wrapper">
+    <canvas id="battleCanvas" width="1280" height="640"></canvas>
+  </div>
+
+  <!-- health bars -->
+  <div class="health-area">
+    <div class="hp-card"><div class="hp-name"><span id="p1HpName">HOMELANDER</span><span id="p1HpVal">100</span></div><div class="hp-bar-bg"><div class="hp-fill" id="p1HpFill" style="width:100%"></div></div></div>
+    <div class="hp-card"><div class="hp-name"><span id="p2HpName">BUTCHER</span><span id="p2HpVal">100</span></div><div class="hp-bar-bg"><div class="hp-fill" id="p2HpFill" style="width:100%"></div></div></div>
+  </div>
+
+  <!-- stat cards -->
+  <div class="stats-row">
+    <div class="stat-card p1-side" id="statP1"><div class="stat-title">FIGHTER</div><div class="fighter-name" id="p1StatName">Homelander</div><div class="attack-def"><span>⚔️ ATK <span id="p1AtkStat">18</span></span><span>🛡️ DEF <span id="p1DefStat">12</span></span></div><div id="p1DefBadge" class="defense-badge" style="display:none">🛡️ DEFENDING</div></div>
+    <div class="stat-card p2-side" id="statP2"><div class="stat-title">FIGHTER</div><div class="fighter-name" id="p2StatName">Butcher</div><div class="attack-def"><span>⚔️ ATK <span id="p2AtkStat">16</span></span><span>🛡️ DEF <span id="p2DefStat">10</span></span></div><div id="p2DefBadge" class="defense-badge" style="display:none">🛡️ DEFENDING</div></div>
+  </div>
+
+  <!-- turn & log -->
+  <div class="info-panel">
+    <div><span class="turn-indicator">⚡ TURN :</span> <span id="turnName">HOMELANDER</span></div>
+    <div class="log-text" id="battleLog">⚔️ Choose your champion and attack!</div>
+  </div>
+
+  <!-- actions -->
+  <div class="action-bar" id="actionPanel">
+    <button class="action-btn btn-attack" data-act="attack">⚔️ ATTACK</button>
+    <button class="action-btn btn-heavy" data-act="heavy">💥 HEAVY</button>
+    <button class="action-btn btn-quick" data-act="quick">⚡ QUICK</button>
+    <button class="action-btn btn-defend" data-act="defend">🛡️ DEFEND</button>
+    <button class="action-btn btn-counter" data-act="counter">🔄 COUNTER</button>
+    <button class="action-btn btn-special" data-act="special">✨ SPECIAL</button>
+  </div>
+  <div id="winnerArea" style="text-align:center; margin-top:6px;"></div>
+</div>
+
+<script>
+  // ========== FIGHTER DATA ==========
+  const FIGHTERS = {
+    hl: { name: "Homelander", atk: 18, def: 12, color: "#4488ff", animPrefix: "hl" },
+    bb: { name: "Butcher", atk: 16, def: 10, color: "#dd4422", animPrefix: "bb" },
+    gj: { name: "Gojo", atk: 22, def: 14, color: "#00ddff", animPrefix: "gj" },
+    sk: { name: "Sukuna", atk: 25, def: 8, color: "#cc4400", animPrefix: "sk" }
+  };
+  const FIGHTER_KEYS = ['hl','bb','gj','sk'];
+
+  // game state
+  let p1Id = 'hl', p2Id = 'bb';
+  let p1Hp = 100, p2Hp = 100;
+  let p1Defending = false, p2Defending = false;
+  let currentTurn = 1; // 1 = player1, 2 = player2
+  let gameOver = false;
+  let busy = false;
+  let round = 1;
+
+  // canvas & drawing (HIGH RES 4x original)
+  const canvas = document.getElementById('battleCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  const W = 1280, H = 640;      // 4x larger than classic 320x160
+  const PIX = 1;                // each unit = 1px (we draw pixel by pixel but with scale)
+  const GROUND_Y = 520;         // ground level
+
+  // positions (home)
+  let p1X = 240, p2X = 960;
+  const P1_HOME = 240, P2_HOME = 960;
+  let p1Y = GROUND_Y, p2Y = GROUND_Y;
+
+  // animation system
+  let animActive = false;
+  let animTimer = 0, animPhase = 0;
+  let currentAnim = null;       // object with type, attacker, damage, crit, etc.
+  let pendingDamage = 0, pendingCrit = false;
+  let animFrameReq = null;
+  let idleReq = null;
+
+  // effects & shake
+  let shakeIntensity = 0;
+  let screenFlash = 0;
+  let particles = [];
+  let floatingTexts = [];
+
+  // ========== HELPER FUNCTIONS ==========
+  function updateUI() {
+    document.getElementById('p1HpFill').style.width = Math.max(0, p1Hp) + '%';
+    document.getElementById('p2HpFill').style.width = Math.max(0, p2Hp) + '%';
+    document.getElementById('p1HpVal').innerText = Math.max(0, p1Hp);
+    document.getElementById('p2HpVal').innerText = Math.max(0, p2Hp);
+    document.getElementById('turnName').innerText = currentTurn === 1 ? FIGHTERS[p1Id].name : FIGHTERS[p2Id].name;
+    document.getElementById('p1AtkStat').innerText = FIGHTERS[p1Id].atk;
+    document.getElementById('p1DefStat').innerText = FIGHTERS[p1Id].def;
+    document.getElementById('p2AtkStat').innerText = FIGHTERS[p2Id].atk;
+    document.getElementById('p2DefStat').innerText = FIGHTERS[p2Id].def;
+    document.getElementById('p1StatName').innerText = FIGHTERS[p1Id].name;
+    document.getElementById('p2StatName').innerText = FIGHTERS[p2Id].name;
+    document.getElementById('p1HpName').innerText = FIGHTERS[p1Id].name.toUpperCase();
+    document.getElementById('p2HpName').innerText = FIGHTERS[p2Id].name.toUpperCase();
+    if(p1Defending) document.getElementById('p1DefBadge').style.display = 'inline-block';
+    else document.getElementById('p1DefBadge').style.display = 'none';
+    if(p2Defending) document.getElementById('p2DefBadge').style.display = 'inline-block';
+    else document.getElementById('p2DefBadge').style.display = 'none';
+  }
+
+  function setLog(msg) { document.getElementById('battleLog').innerText = msg; }
+  function setButtonsDisabled(disabled) {
+    document.querySelectorAll('.action-btn').forEach(btn => btn.disabled = disabled);
+  }
+
+  // camera reset (always recenter after animation)
+  let cameraX = 0, cameraY = 0, targetCamX = 0, targetCamY = 0;
+  function resetCamera() { targetCamX = 0; targetCamY = 0; cameraX = 0; cameraY = 0; }
+  function updateCamera() { cameraX += (targetCamX - cameraX) * 0.2; cameraY += (targetCamY - cameraY) * 0.2; }
+  function applyCamera() { ctx.translate(cameraX, cameraY); }
+
+  // particles and screen shake
+  function addShake(amount) { shakeIntensity = Math.max(shakeIntensity, amount); }
+  function addFlash(alpha) { screenFlash = Math.min(0.8, alpha); }
+  function spawnParticles(x,y,count,color,velScale=1) { for(let i=0;i<count;i++) { particles.push({ x, y, vx: (Math.random()-0.5)*3*velScale, vy: (Math.random()-0.5)*3*velScale -1, life: 12+Math.random()*8, color, size: 2+Math.random()*3 }); } }
+  function spawnFloatText(x,y,text,isCrit) { floatingTexts.push({ x, y, text, life: 30, crit: isCrit }); }
+
+  // update effects
+  function updateEffects() {
+    if(shakeIntensity > 0.1) shakeIntensity *= 0.85; else shakeIntensity = 0;
+    if(screenFlash > 0) screenFlash *= 0.85;
+    for(let i=particles.length-1;i>=0;i--) { let p=particles[i]; p.x+=p.vx; p.y+=p.vy; p.life--; if(p.life<=0) particles.splice(i,1); }
+    for(let i=floatingTexts.length-1;i>=0;i--) { let t=floatingTexts[i]; t.life--; t.y-=1.2; if(t.life<=0) floatingTexts.splice(i,1); }
+  }
+
+  // ========== PIXEL ART DRAWING (4x scale big sprites) ==========
+  function drawPixelRect(x,y,w,h,color) { ctx.fillStyle=color; ctx.fillRect(x,y,w,h); }
+  function drawFighter(id, x, y, state, frame) {
+    // generic placeholder but with high res block style — each fighter gets distinct color blocks (improved pixel density)
+    const stats = FIGHTERS[id];
+    const isDef = (state === 'defend');
+    const bob = (state==='idle') ? Math.sin(frame*0.06)*1.5 : 0;
+    let offY = isDef ? 8 : bob;
+    let baseX = x, baseY = y + offY;
+    // big chunky 60x70 pixel silhouette
+    const mainColor = stats.color;
+    const dark = '#222';
+    const skin = (id==='hl')?'#f7c8a0':(id==='bb')?'#d6a070':(id==='gj')?'#f5e0c8':'#e0b090';
+    // body
+    drawPixelRect(baseX-18, baseY-32, 36, 44, dark);
+    drawPixelRect(baseX-14, baseY-30, 28, 38, mainColor);
+    drawPixelRect(baseX-10, baseY-28, 20, 32, '#151525');
+    // head
+    drawPixelRect(baseX-12, baseY-50, 24, 24, skin);
+    drawPixelRect(baseX-10, baseY-48, 20, 18, '#3a2a1a');
+    // eyes
+    drawPixelRect(baseX-8, baseY-44, 6, 5, '#ffffff');
+    drawPixelRect(baseX+2, baseY-44, 6, 5, '#ffffff');
+    drawPixelRect(baseX-6, baseY-43, 4, 3, '#000000');
+    drawPixelRect(baseX+4, baseY-43, 4, 3, '#000000');
+    if(state === 'attack') { drawPixelRect(baseX+12, baseY-38, 20, 8, '#ffaa44'); drawPixelRect(baseX+16, baseY-42, 12, 6, '#ff8844'); }
+    if(state === 'special') { drawPixelRect(baseX-4, baseY-58, 8, 8, '#ffff88'); }
+    // hair/accents
+    if(id==='hl') drawPixelRect(baseX-14, baseY-54, 28, 6, '#ddb820');
+    if(id==='bb') drawPixelRect(baseX-14, baseY-52, 28, 4, '#1a1a1a');
+    if(id==='gj') drawPixelRect(baseX-12, baseY-54, 24, 6, '#ffffff');
+    if(id==='sk') { drawPixelRect(baseX-14, baseY-54, 28, 5, '#111111'); drawPixelRect(baseX-6, baseY-32, 12, 12, '#aa2222'); }
+    if(isDef) drawPixelRect(baseX-22, baseY-44, 44, 32, '#88aaff33');
+  }
+
+  function drawBackground() {
+    // gradient sky
+    for(let i=0;i<H;i++) { let t=i/H; let r=8+Math.floor(t*8); let g=6+Math.floor(t*12); let b=24+Math.floor(t*30); ctx.fillStyle=`rgb(${r},${g},${b})`; ctx.fillRect(0,i,W,1); }
+    // ground
+    ctx.fillStyle='#2a2a30'; ctx.fillRect(0, GROUND_Y-8, W, 12);
+    ctx.fillStyle='#4a3a2a'; ctx.fillRect(0, GROUND_Y-2, W, 6);
+    for(let i=0;i<20;i++) { ctx.fillStyle='#7a6a4a'; ctx.fillRect(70+i*70, GROUND_Y-6, 12, 6); }
+  }
+
+  function drawEffectsAndShake() {
+    if(screenFlash>0.02) { ctx.fillStyle=`rgba(255,255,200,${screenFlash})`; ctx.fillRect(0,0,W,H); }
+    for(let p of particles) { ctx.fillStyle=p.color; ctx.fillRect(p.x-2, p.y-2, p.size, p.size); }
+    for(let ft of floatingTexts) { ctx.font='bold 22px monospace'; ctx.shadowBlur=0; ctx.fillStyle=ft.crit?'#ff6666':'#ffdd88'; ctx.fillText(ft.text, ft.x-15, ft.y-ft.life*0.5); }
+    ctx.shadowBlur=0;
+  }
+
+  // ========== ANIMATION SYSTEM (camera always returns) ==========
+  function startAnimation(attackerIsP1, actionType, dmg, isCrit) {
+    if(animActive) return;
+    animActive = true;
+    busy = true;
+    setButtonsDisabled(true);
+    pendingDamage = dmg;
+    pendingCrit = isCrit;
+    const attacker = attackerIsP1 ? p1Id : p2Id;
+    const target = attackerIsP1 ? p2Id : p1Id;
+    currentAnim = { attackerIsP1, actionType, dmg, isCrit, frame:0, phase:0, duration:30, step:0 };
+    resetCamera();
+    // small camera shake anticipation
+    if(actionType !== 'defend') addShake(3);
+    if(animFrameReq) cancelAnimationFrame(animFrameReq);
+    function animateStep() {
+      if(!animActive) return;
+      updateCamera();
+      ctx.clearRect(0,0,W,H);
+      drawBackground();
+      // apply camera shake
+      let shakeX = (Math.random()-0.5)*shakeIntensity;
+      let shakeY = (Math.random()-0.5)*shakeIntensity;
+      ctx.save();
+      ctx.translate(shakeX+ cameraX, shakeY+ cameraY);
+      // draw fighters with dynamic states
+      let p1State = 'idle', p2State = 'idle';
+      if(currentAnim) {
+        let prog = (currentAnim.step || 0) / 25;
+        if(prog>1) prog=1;
+        if(currentAnim.actionType !== 'defend') {
+          if(currentAnim.attackerIsP1) { p1State = 'attack'; p2State = 'hit'; if(currentAnim.step>8) { p2X = P2_HOME + (Math.sin(currentAnim.step*1.2)*6); } else p2X = P2_HOME; }
+          else { p2State = 'attack'; p1State = 'hit'; if(currentAnim.step>8) { p1X = P1_HOME - (Math.sin(currentAnim.step*1.2)*6); } else p1X = P1_HOME; }
+        } else { if(currentAnim.attackerIsP1) p1State='defend'; else p2State='defend'; }
+      } else { p1X = P1_HOME; p2X = P2_HOME; p1Y=GROUND_Y; p2Y=GROUND_Y; }
+      drawFighter(p1Id, p1X, p1Y, p1State, performance.now()*0.01);
+      drawFighter(p2Id, p2X, p2Y, p2State, performance.now()*0.01);
+      drawEffectsAndShake();
+      ctx.restore();
+      if(currentAnim) {
+        currentAnim.step = (currentAnim.step || 0) + 1;
+        if(currentAnim.step >= 26) {
+          // animation ends: apply damage, reset positions, clear camera
+          if(currentAnim.actionType !== 'defend' && pendingDamage>0) {
+            if(currentAnim.attackerIsP1) p2Hp = Math.max(0, p2Hp - pendingDamage);
+            else p1Hp = Math.max(0, p1Hp - pendingDamage);
+            spawnFloatText(currentAnim.attackerIsP1 ? p2X : p1X, GROUND_Y-50, `${pendingDamage}`, pendingCrit);
+            addShake(5); addFlash(0.4);
+            spawnParticles(currentAnim.attackerIsP1 ? p2X : p1X, GROUND_Y-30, 12, '#ffaa66',1.2);
+            updateUI();
+          }
+          else if(currentAnim.actionType === 'defend') { setLog(`${FIGHTERS[currentAnim.attackerIsP1?p1Id:p2Id].name} defends!`); }
+          // clear defend flags after action
+          if(currentAnim.actionType !== 'defend') { p1Defending=false; p2Defending=false; }
+          // SWITCH TURN
+          currentTurn = currentTurn === 1 ? 2 : 1;
+          updateUI();
+          setLog(`${FIGHTERS[currentTurn===1?p1Id:p2Id].name}'s turn`);
+          // check game over
+          if(p1Hp <= 0 || p2Hp <= 0) { endGame(); animActive=false; busy=false; return; }
+          // reset everything
+          p1X = P1_HOME; p2X = P2_HOME; p1Y=GROUND_Y; p2Y=GROUND_Y;
+          resetCamera(); targetCamX=0; targetCamY=0; cameraX=0; cameraY=0;
+          animActive = false; busy = false;
+          setButtonsDisabled(false);
+          cancelAnimationFrame(animFrameReq);
+          startIdleRender();
+          return;
+        }
+      }
+      animFrameReq = requestAnimationFrame(animateStep);
+    }
+    animateStep();
+  }
+
+  function endGame() {
+    gameOver = true;
+    const winner = p1Hp > 0 ? FIGHTERS[p1Id].name : FIGHTERS[p2Id].name;
+    document.getElementById('winnerArea').innerHTML = `<div class="winner-overlay"><span class="winner-text">🏆 VICTORY ${winner} 🏆</span><br/><button class="restart-btn" id="restartBtn">⚔️ PLAY AGAIN ⚔️</button></div>`;
+    document.getElementById('restartBtn').onclick = () => location.reload();
+    setButtonsDisabled(true);
+    setLog(`GAME OVER! ${winner} wins!`);
+  }
+
+  function startIdleRender() {
+    if(idleReq) cancelAnimationFrame(idleReq);
+    function idleDraw() {
+      if(animActive || gameOver) return;
+      updateCamera();
+      ctx.clearRect(0,0,W,H);
+      drawBackground();
+      let shakeX = (Math.random()-0.5)*shakeIntensity;
+      let shakeY = (Math.random()-0.5)*shakeIntensity;
+      ctx.save();
+      ctx.translate(shakeX + cameraX, shakeY + cameraY);
+      drawFighter(p1Id, p1X, p1Y, p1Defending?'defend':'idle', performance.now()*0.008);
+      drawFighter(p2Id, p2X, p2Y, p2Defending?'defend':'idle', performance.now()*0.008);
+      drawEffectsAndShake();
+      ctx.restore();
+      updateEffects();
+      idleReq = requestAnimationFrame(idleDraw);
+    }
+    idleDraw();
+  }
+
+  // ========== ACTION HANDLER ==========
+  function performAction(action) {
+    if(gameOver || busy) return;
+    const attackerIsP1 = (currentTurn === 1);
+    const attackerStats = FIGHTERS[attackerIsP1 ? p1Id : p2Id];
+    const defenderStats = FIGHTERS[attackerIsP1 ? p2Id : p1Id];
+    let dmg = 0, crit = false;
+    const isDefending = attackerIsP1 ? p2Defending : p1Defending;
+    let reduction = defenderStats.def + (isDefending ? Math.floor(defenderStats.def*0.5) : 0);
+    if(action === 'defend') {
+      if(attackerIsP1) p1Defending = true; else p2Defending = true;
+      setLog(`${attackerStats.name} takes defensive stance!`);
+      updateUI();
+      startAnimation(attackerIsP1, 'defend', 0, false);
+      return;
+    }
+    if(action === 'attack') dmg = attackerStats.atk + Math.floor(Math.random()*7);
+    else if(action === 'heavy') dmg = Math.floor(attackerStats.atk*1.55) + Math.floor(Math.random()*8);
+    else if(action === 'quick') dmg = Math.floor(attackerStats.atk*0.75) + Math.floor(Math.random()*5);
+    else if(action === 'counter') dmg = Math.floor(attackerStats.atk*1.2) + Math.floor(Math.random()*9);
+    else if(action === 'special') {
+      if((attackerIsP1?p1Hp:p2Hp) <= 20) { setLog(`Not enough energy for special!`); return; }
+      dmg = (attackerStats.atk * 1.8) + Math.floor(Math.random()*15);
+    }
+    if(Math.random()<0.12) { dmg = Math.floor(dmg*1.7); crit=true; }
+    dmg = Math.max(2, dmg - reduction + Math.floor(Math.random()*6));
+    if(isDefending && action !=='defend') { if(attackerIsP1) p2Defending=false; else p1Defending=false; updateUI(); }
+    setLog(`${attackerStats.name} uses ${action.toUpperCase()}!`);
+    startAnimation(attackerIsP1, action, dmg, crit);
+  }
+
+  // selection & init
+  function buildSelectors() {
+    const p1Div = document.getElementById('p1SelectGroup');
+    const p2Div = document.getElementById('p2SelectGroup');
+    FIGHTER_KEYS.forEach(key => {
+      let btn1 = document.createElement('button'); btn1.innerText = FIGHTERS[key].name; btn1.className = 'fighter-btn';
+      btn1.onclick = () => { if(!gameOver && !busy) { p1Id = key; updateUI(); document.querySelectorAll('#p1SelectGroup .fighter-btn').forEach(b=>b.classList.remove('active-p1')); btn1.classList.add('active-p1'); startIdleRender(); } };
+      if(key==='hl') btn1.classList.add('active-p1');
+      p1Div.appendChild(btn1);
+      let btn2 = document.createElement('button'); btn2.innerText = FIGHTERS[key].name; btn2.className = 'fighter-btn';
+      btn2.onclick = () => { if(!gameOver && !busy) { p2Id = key; updateUI(); document.querySelectorAll('#p2SelectGroup .fighter-btn').forEach(b=>b.classList.remove('active-p2')); btn2.classList.add('active-p2'); startIdleRender(); } };
+      if(key==='bb') btn2.classList.add('active-p2');
+      p2Div.appendChild(btn2);
+    });
+  }
+
+  function bindActions() {
+    document.querySelectorAll('.action-btn').forEach(btn => {
+      btn.onclick = () => performAction(btn.getAttribute('data-act'));
+    });
+  }
+
+  p1X=P1_HOME; p2X=P2_HOME; p1Y=GROUND_Y; p2Y=GROUND_Y;
+  buildSelectors();
+  bindActions();
+  updateUI();
+  startIdleRender();
+  setLog("⚔️ Select warriors and attack! Camera always resets after each blow ⚔️");
+  resetCamera();
+</script>
+</body>
+</html>
