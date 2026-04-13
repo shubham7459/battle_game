@@ -1,0 +1,1 @@
+web: gunicorn battle_game.wsgi
